@@ -23,13 +23,22 @@ namespace Project_GeoService.Controllers
 
         // GET: api/country
         [HttpGet]
-        public IEnumerable<Country> Get()
+        [HttpHead]
+        public ActionResult<IEnumerable<Country>> GetAll()
         {
-            return _repository.GetAll();
+            try
+            {
+                return _repository.GetAll().ToList();
+            }
+            catch(CountryException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         // GET: api/country/{id}
         [HttpGet("{id}", Name ="Get")]
+        [HttpHead("{id}")]
         public ActionResult<Country> Get(int id)
         {
             try

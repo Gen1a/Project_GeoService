@@ -2,6 +2,8 @@
 {
     public class Country
     {
+        public Country() { }
+
         public Country(string name, string capital, string continent)
         {
             Name = name;
