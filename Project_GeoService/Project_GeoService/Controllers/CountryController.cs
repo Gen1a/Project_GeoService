@@ -50,7 +50,7 @@ namespace Project_GeoService.Controllers
         }
 
         // GET: api/countries/{id}
-        [HttpGet("{id:long}", Name = "Get")]
+        [HttpGet("{id}", Name = "Get")]
         [HttpHead("{id}")]
         public ActionResult<Country> Get(long id)
         {
@@ -68,6 +68,8 @@ namespace Project_GeoService.Controllers
         [HttpPost]
         public ActionResult<Country> Post([FromBody] Country country)
         {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
             _repository.AddCountry(country);
             return CreatedAtAction(nameof(Get), new { Id = country.Id }, country);
         }
