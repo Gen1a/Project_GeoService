@@ -2,12 +2,13 @@
 using Project_GeoService.Interfaces;
 using Project_GeoService.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Project_GeoService.Repositories
 {
     public class CountryRepository : ICountryRepository
     {
-        private Dictionary<int, Country> data = new Dictionary<int, Country>();
+        private Dictionary<long, Country> data = new Dictionary<long, Country>();
 
         public CountryRepository()
         {
@@ -36,7 +37,35 @@ namespace Project_GeoService.Repositories
             else throw new CountryException($"No Countries present in the database.");
         }
 
-        public Country GetCountry(int id)
+        public IEnumerable<Country> GetAll(string continent, string capital)
+        {
+            if (!(data.Count == 0) && !string.IsNullOrEmpty(continent) && !string.IsNullOrEmpty(capital))
+            {
+                return data.Values.Where(_ => _.Continent.ToLower() == continent.ToLower() && _.Capital.ToLower() == capital.ToLower());
+            }
+            else throw new CountryException($"No Countries present with continent '{continent}' and capital '{capital}' in the database.");
+        }
+
+        public IEnumerable<Country> GetAllByContinent(string continent)
+        {
+            if (!(data.Count == 0) && !string.IsNullOrEmpty(continent))
+            {
+                return data.Values.Where(_ => _.Continent.ToLower() == continent.ToLower());
+            }
+            else throw new CountryException($"No Countries present with continent '{continent}' in the database.");
+        }
+
+        public IEnumerable<Country> GetAllByCapital(string capital)
+        {
+            if (!(data.Count == 0) && !string.IsNullOrEmpty(capital))
+            {
+                return data.Values.Where(_ => _.Capital.ToLower() == capital.ToLower());
+            }
+            else throw new CountryException($"No Countries present with capital '{capital}' in the database.");
+        }
+
+
+        public Country GetCountry(long id)
         {
             if (data.ContainsKey(id))
             {

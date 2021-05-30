@@ -7,9 +7,15 @@ namespace Project_GeoService.Interfaces
     {
         void AddCountry(Country country);
 
-        Country GetCountry(int id);
+        Country GetCountry(long id);
 
         IEnumerable<Country> GetAll();
+
+        IEnumerable<Country> GetAll(string continent, string capital);
+
+        IEnumerable<Country> GetAllByContinent(string continent);
+
+        IEnumerable<Country> GetAllByCapital(string capital);
 
         void RemoveCountry(Country country);
 

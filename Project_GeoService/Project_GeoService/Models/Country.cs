@@ -11,9 +11,9 @@
             Continent = continent;
         }
 
-        public Country(int id, string name, string capital, string continent) : this(name, capital, continent) => Id = id;
+        public Country(long id, string name, string capital, string continent) : this(name, capital, continent) => Id = id;
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Capital { get; set; }
         public string Continent { get; set; }

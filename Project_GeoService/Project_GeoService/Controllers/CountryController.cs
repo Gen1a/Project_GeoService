@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Project_GeoService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/countries")]
     [ApiController]
     public class CountryController : ControllerBase
     {
@@ -24,11 +24,23 @@ namespace Project_GeoService.Controllers
         // GET: api/country
         [HttpGet]
         [HttpHead]
-        public ActionResult<IEnumerable<Country>> GetAll()
+        public ActionResult<IEnumerable<Country>> GetAll([FromQuery] string continent, [FromQuery] string capital)
         {
             try
             {
-                return _repository.GetAll().ToList();
+                if (!string.IsNullOrEmpty(continent) && !string.IsNullOrEmpty(capital))
+                {
+                    return _repository.GetAll(continent, capital).ToList();
+                }
+                else if (!string.IsNullOrEmpty(continent) && string.IsNullOrEmpty(capital))
+                {
+                    return _repository.GetAllByContinent(continent).ToList();
+                }
+                else if (string.IsNullOrEmpty(continent) && !string.IsNullOrEmpty(capital))
+                {
+                    return _repository.GetAllByCapital(capital).ToList();
+                }
+                else return _repository.GetAll().ToList();
             }
             catch(CountryException ex)
             {
@@ -39,7 +51,7 @@ namespace Project_GeoService.Controllers
         // GET: api/country/{id}
         [HttpGet("{id}", Name ="Get")]
         [HttpHead("{id}")]
-        public ActionResult<Country> Get(int id)
+        public ActionResult<Country> Get(long id)
         {
             try
             {
