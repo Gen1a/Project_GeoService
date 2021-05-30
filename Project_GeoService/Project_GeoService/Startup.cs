@@ -12,6 +12,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Project_GeoService.Data;
 
 namespace Project_GeoService
 {
@@ -30,7 +32,9 @@ namespace Project_GeoService
             services.AddControllers(setup => setup.ReturnHttpNotAcceptable = true)
                 .AddNewtonsoftJson()
                 .AddXmlDataContractSerializerFormatters();
-            services.AddSingleton<ICountryRepository, CountryRepository>();
+            //services.AddSingleton<ICountryRepository, CountryRepository>();
+            services.AddDbContext<Project_GeoServiceContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("Project_GeoServiceContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
