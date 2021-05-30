@@ -22,7 +22,7 @@ namespace Project_GeoService.Controllers
             this._repository = repository;
         }
 
-        // GET: api/country
+        // GET: api/countries
         [HttpGet]
         [HttpHead]
         public ActionResult<IEnumerable<Country>> GetAll([FromQuery] string continent, [FromQuery] string capital)
@@ -49,8 +49,8 @@ namespace Project_GeoService.Controllers
             }
         }
 
-        // GET: api/country/{id}
-        [HttpGet("{id}", Name = "Get")]
+        // GET: api/countries/{id}
+        [HttpGet("{id:long}", Name = "Get")]
         [HttpHead("{id}")]
         public ActionResult<Country> Get(long id)
         {
