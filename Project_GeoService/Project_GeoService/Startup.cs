@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Project_GeoService.Interfaces;
 using Project_GeoService.Middleware;
-using Project_GeoService.Repositories;
+//using Project_GeoService.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -31,15 +31,17 @@ namespace Project_GeoService.Controllers
             {
                 if (!string.IsNullOrEmpty(continent) && !string.IsNullOrEmpty(capital))
                 {
-                    return _context.Country.Where(_ => _.Continent == continent && _.Capital == capital).ToList();
+                    return null;
+                    //return _context.Country.Where(_ => _.Continent.Name == continent && _.Capitals.Contains(capital).ToList();
                 }
                 else if (!string.IsNullOrEmpty(continent) && string.IsNullOrEmpty(capital))
                 {
-                    return _context.Country.Where(_ => _.Continent == continent).ToList();
+                    return _context.Country.Where(_ => _.Continent.Name == continent).ToList();
                 }
                 else if (string.IsNullOrEmpty(continent) && !string.IsNullOrEmpty(capital))
                 {
-                    return _context.Country.Where(_ => _.Capital == capital).ToList();
+                    //return _context.Country.Where(_ => _.Capital == capital).ToList();
+                    return null;
                 }
                 else return _context.Country.ToList();
             }
