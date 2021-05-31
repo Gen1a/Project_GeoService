@@ -12,47 +12,47 @@ namespace Project_GeoService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountryControllerEF : ControllerBase
+    public class CityControllerEF : ControllerBase
     {
         private readonly Project_GeoServiceContext _context;
 
-        public CountryControllerEF(Project_GeoServiceContext context)
+        public CityControllerEF(Project_GeoServiceContext context)
         {
             _context = context;
         }
 
-        // GET: api/CountryControllerEF
+        // GET: api/CityControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountry()
+        public async Task<ActionResult<IEnumerable<City>>> GetCity()
         {
-            return await _context.Country.ToListAsync();
+            return await _context.City.ToListAsync();
         }
 
-        // GET: api/CountryControllerEF/5
+        // GET: api/CityControllerEF/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Country>> GetCountry(long id)
+        public async Task<ActionResult<City>> GetCity(long id)
         {
-            var country = await _context.Country.FindAsync(id);
+            var city = await _context.City.FindAsync(id);
 
-            if (country == null)
+            if (city == null)
             {
                 return NotFound();
             }
 
-            return country;
+            return city;
         }
 
-        // PUT: api/CountryControllerEF/5
+        // PUT: api/CityControllerEF/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountry(long id, Country country)
+        public async Task<IActionResult> PutCity(long id, City city)
         {
-            if (id != country.Id)
+            if (id != city.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(country).State = EntityState.Modified;
+            _context.Entry(city).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Project_GeoService.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CountryExists(id))
+                if (!CityExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace Project_GeoService.Controllers
             return NoContent();
         }
 
-        // POST: api/CountryControllerEF
+        // POST: api/CityControllerEF
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Country>> PostCountry(Country country)
+        public async Task<ActionResult<City>> PostCity(City city)
         {
-            _context.Country.Add(country);
+            _context.City.Add(city);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+            return CreatedAtAction("GetCity", new { id = city.Id }, city);
         }
 
-        // DELETE: api/CountryControllerEF/5
+        // DELETE: api/CityControllerEF/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCountry(long id)
+        public async Task<IActionResult> DeleteCity(long id)
         {
-            var country = await _context.Country.FindAsync(id);
-            if (country == null)
+            var city = await _context.City.FindAsync(id);
+            if (city == null)
             {
                 return NotFound();
             }
 
-            _context.Country.Remove(country);
+            _context.City.Remove(city);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CountryExists(long id)
+        private bool CityExists(long id)
         {
-            return _context.Country.Any(e => e.Id == id);
+            return _context.City.Any(e => e.Id == id);
         }
     }
 }

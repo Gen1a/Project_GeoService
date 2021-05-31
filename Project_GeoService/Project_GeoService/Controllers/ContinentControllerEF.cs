@@ -12,47 +12,47 @@ namespace Project_GeoService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountryControllerEF : ControllerBase
+    public class ContinentControllerEF : ControllerBase
     {
         private readonly Project_GeoServiceContext _context;
 
-        public CountryControllerEF(Project_GeoServiceContext context)
+        public ContinentControllerEF(Project_GeoServiceContext context)
         {
             _context = context;
         }
 
-        // GET: api/CountryControllerEF
+        // GET: api/ContinentControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountry()
+        public async Task<ActionResult<IEnumerable<Continent>>> GetContinent()
         {
-            return await _context.Country.ToListAsync();
+            return await _context.Continent.ToListAsync();
         }
 
-        // GET: api/CountryControllerEF/5
+        // GET: api/ContinentControllerEF/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Country>> GetCountry(long id)
+        public async Task<ActionResult<Continent>> GetContinent(long id)
         {
-            var country = await _context.Country.FindAsync(id);
+            var continent = await _context.Continent.FindAsync(id);
 
-            if (country == null)
+            if (continent == null)
             {
                 return NotFound();
             }
 
-            return country;
+            return continent;
         }
 
-        // PUT: api/CountryControllerEF/5
+        // PUT: api/ContinentControllerEF/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountry(long id, Country country)
+        public async Task<IActionResult> PutContinent(long id, Continent continent)
         {
-            if (id != country.Id)
+            if (id != continent.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(country).State = EntityState.Modified;
+            _context.Entry(continent).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Project_GeoService.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CountryExists(id))
+                if (!ContinentExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace Project_GeoService.Controllers
             return NoContent();
         }
 
-        // POST: api/CountryControllerEF
+        // POST: api/ContinentControllerEF
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Country>> PostCountry(Country country)
+        public async Task<ActionResult<Continent>> PostContinent(Continent continent)
         {
-            _context.Country.Add(country);
+            _context.Continent.Add(continent);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+            return CreatedAtAction("GetContinent", new { id = continent.Id }, continent);
         }
 
-        // DELETE: api/CountryControllerEF/5
+        // DELETE: api/ContinentControllerEF/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCountry(long id)
+        public async Task<IActionResult> DeleteContinent(long id)
         {
-            var country = await _context.Country.FindAsync(id);
-            if (country == null)
+            var continent = await _context.Continent.FindAsync(id);
+            if (continent == null)
             {
                 return NotFound();
             }
 
-            _context.Country.Remove(country);
+            _context.Continent.Remove(continent);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CountryExists(long id)
+        private bool ContinentExists(long id)
         {
-            return _context.Country.Any(e => e.Id == id);
+            return _context.Continent.Any(e => e.Id == id);
         }
     }
 }

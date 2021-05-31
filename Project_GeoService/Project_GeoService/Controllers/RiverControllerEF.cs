@@ -12,47 +12,47 @@ namespace Project_GeoService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CountryControllerEF : ControllerBase
+    public class RiverControllerEF : ControllerBase
     {
         private readonly Project_GeoServiceContext _context;
 
-        public CountryControllerEF(Project_GeoServiceContext context)
+        public RiverControllerEF(Project_GeoServiceContext context)
         {
             _context = context;
         }
 
-        // GET: api/CountryControllerEF
+        // GET: api/RiverControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountry()
+        public async Task<ActionResult<IEnumerable<River>>> GetRiver()
         {
-            return await _context.Country.ToListAsync();
+            return await _context.River.ToListAsync();
         }
 
-        // GET: api/CountryControllerEF/5
+        // GET: api/RiverControllerEF/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Country>> GetCountry(long id)
+        public async Task<ActionResult<River>> GetRiver(long id)
         {
-            var country = await _context.Country.FindAsync(id);
+            var river = await _context.River.FindAsync(id);
 
-            if (country == null)
+            if (river == null)
             {
                 return NotFound();
             }
 
-            return country;
+            return river;
         }
 
-        // PUT: api/CountryControllerEF/5
+        // PUT: api/RiverControllerEF/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCountry(long id, Country country)
+        public async Task<IActionResult> PutRiver(long id, River river)
         {
-            if (id != country.Id)
+            if (id != river.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(country).State = EntityState.Modified;
+            _context.Entry(river).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace Project_GeoService.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CountryExists(id))
+                if (!RiverExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace Project_GeoService.Controllers
             return NoContent();
         }
 
-        // POST: api/CountryControllerEF
+        // POST: api/RiverControllerEF
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Country>> PostCountry(Country country)
+        public async Task<ActionResult<River>> PostRiver(River river)
         {
-            _context.Country.Add(country);
+            _context.River.Add(river);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCountry", new { id = country.Id }, country);
+            return CreatedAtAction("GetRiver", new { id = river.Id }, river);
         }
 
-        // DELETE: api/CountryControllerEF/5
+        // DELETE: api/RiverControllerEF/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCountry(long id)
+        public async Task<IActionResult> DeleteRiver(long id)
         {
-            var country = await _context.Country.FindAsync(id);
-            if (country == null)
+            var river = await _context.River.FindAsync(id);
+            if (river == null)
             {
                 return NotFound();
             }
 
-            _context.Country.Remove(country);
+            _context.River.Remove(river);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CountryExists(long id)
+        private bool RiverExists(long id)
         {
-            return _context.Country.Any(e => e.Id == id);
+            return _context.River.Any(e => e.Id == id);
         }
     }
 }
