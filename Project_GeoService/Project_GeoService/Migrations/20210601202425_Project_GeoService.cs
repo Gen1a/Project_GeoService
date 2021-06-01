@@ -12,7 +12,8 @@ namespace Project_GeoService.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Population = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -48,7 +49,7 @@ namespace Project_GeoService.Migrations
                 {
                     table.PrimaryKey("PK_Country", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Country_Continent_ContinentId",
+                        name: "FK_Country_Continent",
                         column: x => x.ContinentId,
                         principalTable: "Continent",
                         principalColumn: "Id",
@@ -64,48 +65,65 @@ namespace Project_GeoService.Migrations
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Population = table.Column<int>(type: "int", nullable: false),
                     Surface = table.Column<double>(type: "float", nullable: false),
-                    CountryId = table.Column<long>(type: "bigint", nullable: false),
-                    CountryId1 = table.Column<long>(type: "bigint", nullable: true)
+                    CountryId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_City", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_City_Country_CountryId",
+                        name: "FK_City_Country",
                         column: x => x.CountryId,
                         principalTable: "Country",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_City_Country_CountryId1",
-                        column: x => x.CountryId1,
-                        principalTable: "Country",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "CountryRiver",
                 columns: table => new
                 {
-                    CountriesId = table.Column<long>(type: "bigint", nullable: false),
-                    RiversId = table.Column<long>(type: "bigint", nullable: false)
+                    CountryId = table.Column<long>(type: "bigint", nullable: false),
+                    RiverId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CountryRiver", x => new { x.CountriesId, x.RiversId });
+                    table.PrimaryKey("PK_CountryRiver", x => new { x.CountryId, x.RiverId });
                     table.ForeignKey(
-                        name: "FK_CountryRiver_Country_CountriesId",
-                        column: x => x.CountriesId,
+                        name: "FK_CountryRiver_Country",
+                        column: x => x.CountryId,
                         principalTable: "Country",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_CountryRiver_River_RiversId",
-                        column: x => x.RiversId,
+                        name: "FK_CountryRiver_River",
+                        column: x => x.RiverId,
                         principalTable: "River",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CountryCapital",
+                columns: table => new
+                {
+                    CountryId = table.Column<long>(type: "bigint", nullable: false),
+                    CityId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CountryCapital", x => new { x.CountryId, x.CityId });
+                    table.ForeignKey(
+                        name: "FK_CountryCapital_City",
+                        column: x => x.CityId,
+                        principalTable: "City",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_CountryCapital_Country",
+                        column: x => x.CountryId,
+                        principalTable: "Country",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -114,34 +132,37 @@ namespace Project_GeoService.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_City_CountryId1",
-                table: "City",
-                column: "CountryId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Country_ContinentId",
                 table: "Country",
                 column: "ContinentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CountryRiver_RiversId",
+                name: "IX_CountryCapital_CityId",
+                table: "CountryCapital",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CountryRiver_RiverId",
                 table: "CountryRiver",
-                column: "RiversId");
+                column: "RiverId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "City");
+                name: "CountryCapital");
 
             migrationBuilder.DropTable(
                 name: "CountryRiver");
 
             migrationBuilder.DropTable(
-                name: "Country");
+                name: "City");
 
             migrationBuilder.DropTable(
                 name: "River");
+
+            migrationBuilder.DropTable(
+                name: "Country");
 
             migrationBuilder.DropTable(
                 name: "Continent");

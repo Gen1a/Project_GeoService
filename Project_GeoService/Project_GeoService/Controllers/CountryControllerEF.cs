@@ -23,16 +23,16 @@ namespace Project_GeoService.Controllers
 
         // GET: api/CountryControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountry()
+        public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
         {
-            return await _context.Country.ToListAsync();
+            return await _context.Countries.ToListAsync();
         }
 
         // GET: api/CountryControllerEF/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Country>> GetCountry(long id)
         {
-            var country = await _context.Country.FindAsync(id);
+            var country = await _context.Countries.FindAsync(id);
 
             if (country == null)
             {
@@ -78,7 +78,7 @@ namespace Project_GeoService.Controllers
         [HttpPost]
         public async Task<ActionResult<Country>> PostCountry(Country country)
         {
-            _context.Country.Add(country);
+            _context.Countries.Add(country);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
@@ -88,13 +88,13 @@ namespace Project_GeoService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(long id)
         {
-            var country = await _context.Country.FindAsync(id);
+            var country = await _context.Countries.FindAsync(id);
             if (country == null)
             {
                 return NotFound();
             }
 
-            _context.Country.Remove(country);
+            _context.Countries.Remove(country);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Project_GeoService.Controllers
 
         private bool CountryExists(long id)
         {
-            return _context.Country.Any(e => e.Id == id);
+            return _context.Countries.Any(e => e.Id == id);
         }
     }
 }

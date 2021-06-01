@@ -23,16 +23,16 @@ namespace Project_GeoService.Controllers
 
         // GET: api/CityControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<City>>> GetCity()
+        public async Task<ActionResult<IEnumerable<City>>> GetCities()
         {
-            return await _context.City.ToListAsync();
+            return await _context.Cities.ToListAsync();
         }
 
         // GET: api/CityControllerEF/5
         [HttpGet("{id}")]
         public async Task<ActionResult<City>> GetCity(long id)
         {
-            var city = await _context.City.FindAsync(id);
+            var city = await _context.Cities.FindAsync(id);
 
             if (city == null)
             {
@@ -78,7 +78,7 @@ namespace Project_GeoService.Controllers
         [HttpPost]
         public async Task<ActionResult<City>> PostCity(City city)
         {
-            _context.City.Add(city);
+            _context.Cities.Add(city);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCity", new { id = city.Id }, city);
@@ -88,13 +88,13 @@ namespace Project_GeoService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCity(long id)
         {
-            var city = await _context.City.FindAsync(id);
+            var city = await _context.Cities.FindAsync(id);
             if (city == null)
             {
                 return NotFound();
             }
 
-            _context.City.Remove(city);
+            _context.Cities.Remove(city);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Project_GeoService.Controllers
 
         private bool CityExists(long id)
         {
-            return _context.City.Any(e => e.Id == id);
+            return _context.Cities.Any(e => e.Id == id);
         }
     }
 }

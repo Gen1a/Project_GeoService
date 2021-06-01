@@ -23,16 +23,16 @@ namespace Project_GeoService.Controllers
 
         // GET: api/ContinentControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Continent>>> GetContinent()
+        public async Task<ActionResult<IEnumerable<Continent>>> GetContinents()
         {
-            return await _context.Continent.ToListAsync();
+            return await _context.Continents.ToListAsync();
         }
 
         // GET: api/ContinentControllerEF/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Continent>> GetContinent(long id)
         {
-            var continent = await _context.Continent.FindAsync(id);
+            var continent = await _context.Continents.FindAsync(id);
 
             if (continent == null)
             {
@@ -78,7 +78,7 @@ namespace Project_GeoService.Controllers
         [HttpPost]
         public async Task<ActionResult<Continent>> PostContinent(Continent continent)
         {
-            _context.Continent.Add(continent);
+            _context.Continents.Add(continent);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetContinent", new { id = continent.Id }, continent);
@@ -88,13 +88,13 @@ namespace Project_GeoService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContinent(long id)
         {
-            var continent = await _context.Continent.FindAsync(id);
+            var continent = await _context.Continents.FindAsync(id);
             if (continent == null)
             {
                 return NotFound();
             }
 
-            _context.Continent.Remove(continent);
+            _context.Continents.Remove(continent);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Project_GeoService.Controllers
 
         private bool ContinentExists(long id)
         {
-            return _context.Continent.Any(e => e.Id == id);
+            return _context.Continents.Any(e => e.Id == id);
         }
     }
 }

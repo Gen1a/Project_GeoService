@@ -23,16 +23,16 @@ namespace Project_GeoService.Controllers
 
         // GET: api/RiverControllerEF
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<River>>> GetRiver()
+        public async Task<ActionResult<IEnumerable<River>>> GetRivers()
         {
-            return await _context.River.ToListAsync();
+            return await _context.Rivers.ToListAsync();
         }
 
         // GET: api/RiverControllerEF/5
         [HttpGet("{id}")]
         public async Task<ActionResult<River>> GetRiver(long id)
         {
-            var river = await _context.River.FindAsync(id);
+            var river = await _context.Rivers.FindAsync(id);
 
             if (river == null)
             {
@@ -78,7 +78,7 @@ namespace Project_GeoService.Controllers
         [HttpPost]
         public async Task<ActionResult<River>> PostRiver(River river)
         {
-            _context.River.Add(river);
+            _context.Rivers.Add(river);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetRiver", new { id = river.Id }, river);
@@ -88,13 +88,13 @@ namespace Project_GeoService.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRiver(long id)
         {
-            var river = await _context.River.FindAsync(id);
+            var river = await _context.Rivers.FindAsync(id);
             if (river == null)
             {
                 return NotFound();
             }
 
-            _context.River.Remove(river);
+            _context.Rivers.Remove(river);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -102,7 +102,7 @@ namespace Project_GeoService.Controllers
 
         private bool RiverExists(long id)
         {
-            return _context.River.Any(e => e.Id == id);
+            return _context.Rivers.Any(e => e.Id == id);
         }
     }
 }
