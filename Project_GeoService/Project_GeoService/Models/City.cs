@@ -1,4 +1,5 @@
 ﻿using Project_GeoService.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Project_GeoService.Models
@@ -13,6 +14,8 @@ namespace Project_GeoService.Models
 
         [Range(0, double.MaxValue, ErrorMessage = "{0} must be greater than {1}.")]
         public double Surface { get; set; }
+
+        public virtual ICollection<CountryCapital> CountryCapitals { get; set; }
 
         [Required]
         public Country Country { get; set; }

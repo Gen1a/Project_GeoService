@@ -10,7 +10,7 @@ namespace Project_GeoService.Data
             //context.Database.EnsureCreated();
 
             // Look for any countries.
-            if (context.Country.Any())
+            if (context.Countries.Any())
             {
                 return;   // DB has been seeded
             }
@@ -24,7 +24,7 @@ namespace Project_GeoService.Data
 
             foreach (Continent c in continents)
             {
-                context.Continent.Add(c);
+                context.Continents.Add(c);
             }
             context.SaveChanges();
 
@@ -58,7 +58,7 @@ namespace Project_GeoService.Data
 
             foreach (Country c in countries)
             {
-                context.Country.Add(c);
+                context.Countries.Add(c);
             }
             context.SaveChanges();
 
@@ -92,20 +92,65 @@ namespace Project_GeoService.Data
 
             foreach (City c in cities)
             {
-                context.City.Add(c);
+                context.Cities.Add(c);
+            }
+            context.SaveChanges();
+
+            var countryCapitals = new CountryCapital[]
+            {
+                new CountryCapital {
+                    CountryId = countries.Single(c => c.Name == "Belgium").Id,
+                    CityId = cities.Single(c => c.Name == "Brussels").Id
+                },
+                new CountryCapital {
+                    CountryId = countries.Single(c => c.Name == "Netherlands").Id,
+                    CityId = cities.Single(c => c.Name == "Amsterdam").Id
+                },
+            };
+
+            foreach (CountryCapital cc in countryCapitals)
+            {
+                context.CountryCapitals.Add(cc);
             }
             context.SaveChanges();
 
             var rivers = new River[]
             {
-                new River { Name = "Schelde", Length = 360 },
+                new River { Name = "Scheldt", Length = 360 },
                 new River { Name = "Demer", Length = 85 },
                 new River { Name = "Lesse", Length = 89 },
+                new River { Name = "Rhine River", Length = 1230 },
             };
 
             foreach (River r in rivers)
             {
-                context.River.Add(r);
+                context.Rivers.Add(r);
+            }
+            context.SaveChanges();
+
+            var countryRivers = new CountryRiver[]
+            {
+                new CountryRiver {
+                    CountryId = countries.Single(c => c.Name == "Belgium").Id,
+                    RiverId = rivers.Single(r => r.Name == "Scheldt").Id
+                },
+                new CountryRiver {
+                    CountryId = countries.Single(c => c.Name == "Belgium").Id,
+                    RiverId = rivers.Single(r => r.Name == "Demer").Id
+                },
+                new CountryRiver {
+                    CountryId = countries.Single(c => c.Name == "Belgium").Id,
+                    RiverId = rivers.Single(r => r.Name == "Lesse").Id
+                },
+                new CountryRiver {
+                    CountryId = countries.Single(c => c.Name == "Netherlands").Id,
+                    RiverId = rivers.Single(r => r.Name == "Rhine River").Id
+                },
+            };
+
+            foreach (CountryRiver cr in countryRivers)
+            {
+                context.CountryRivers.Add(cr);
             }
             context.SaveChanges();
         }

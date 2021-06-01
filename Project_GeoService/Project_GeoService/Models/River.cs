@@ -13,6 +13,6 @@ namespace Project_GeoService.Models
         public double Length { get; set; }
 
         [Required]
-        public virtual ICollection<Country> Countries { get; set; }
+        public virtual ICollection<CountryRiver> CountryRivers { get; set; }
     }
 }

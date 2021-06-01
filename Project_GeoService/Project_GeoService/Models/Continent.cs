@@ -7,11 +7,20 @@ namespace Project_GeoService.Models
 {
     public class Continent : BaseEntity
     {
+        private int _population;
+
         [StringLength(100, ErrorMessage = "{0} length must be between {2} and {1}.", MinimumLength = 4)]
         public string Name { get; set; }
 
         [Range(0, int.MaxValue, ErrorMessage = "{0} must be greater than {1}.")]
-        public int Population => Countries.Sum(_ => (int?)_.Population) ?? 0;
+        public int Population
+        {
+            get => _population;
+            set
+            {
+                _population = this.Countries.Sum(_ => (int?)_.Population) ?? 0;
+            }
+        }
 
         public virtual ICollection<Country> Countries { get; set; }
     }
