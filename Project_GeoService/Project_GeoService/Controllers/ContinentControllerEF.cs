@@ -10,7 +10,7 @@ using Project_GeoService.Models;
 
 namespace Project_GeoService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/continent")]
     [ApiController]
     public class ContinentControllerEF : ControllerBase
     {
@@ -21,28 +21,36 @@ namespace Project_GeoService.Controllers
             _context = context;
         }
 
-        // GET: api/ContinentControllerEF
+        // GET: api/continent
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Continent>>> GetContinents()
         {
-            return await _context.Continents.ToListAsync();
+            var continents = await _context.Continents.ToListAsync();
+            foreach (Continent c in continents)
+            {
+                var countries = await _context.Countries.Where(_ => _.ContinentId == c.Id).ToListAsync();
+                foreach (Country country in countries)
+                {
+                    c.Countries.Add(country);
+                    c.Population += country.Population;
+                }
+            }
+            return continents;
         }
 
-        // GET: api/ContinentControllerEF/5
+        // GET: api/continent/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Continent>> GetContinent(long id)
+        public async Task<ActionResult<ContinentDTO>> GetContinent(long id)
         {
             var continent = await _context.Continents.FindAsync(id);
+            if (continent == null) return NotFound();
 
-            if (continent == null)
-            {
-                return NotFound();
-            }
-
-            return continent;
+            //continent.Population = GetPopulation(id);
+            var foo = ContinentToDTO(continent);
+            return foo;
         }
 
-        // PUT: api/ContinentControllerEF/5
+        // PUT: api/continent/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutContinent(long id, Continent continent)
@@ -73,18 +81,20 @@ namespace Project_GeoService.Controllers
             return NoContent();
         }
 
-        // POST: api/ContinentControllerEF
+        // POST: api/continent
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Continent>> PostContinent(Continent continent)
+        public async Task<ActionResult<Continent>> PostContinent([FromBody] Continent continent)
         {
+            if (ContinentExists(continent.Name)) return BadRequest();
+
             _context.Continents.Add(continent);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetContinent", new { id = continent.Id }, continent);
         }
 
-        // DELETE: api/ContinentControllerEF/5
+        // DELETE: api/continent/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteContinent(long id)
         {
@@ -100,9 +110,36 @@ namespace Project_GeoService.Controllers
             return NoContent();
         }
 
+        private ContinentDTO ContinentToDTO(Continent continent) =>
+            new ContinentDTO
+            {
+                Id = continent.Id,
+                Name = continent.Name,
+                Population = GetPopulation(continent.Id),
+                Countries = GetCountriesAsURL(continent.Id).Result
+            };
+
         private bool ContinentExists(long id)
         {
             return _context.Continents.Any(e => e.Id == id);
+        }
+
+        private bool ContinentExists(string name)
+        {
+            return _context.Continents.Any(e => e.Name == name);
+        }
+
+        private int GetPopulation(long continentId) => _context.Countries.Where(_ => _.ContinentId == continentId).Sum(_ => _.Population);
+
+        private async Task<IEnumerable<string>> GetCountriesAsURL(long continentId)
+        {
+            List<string> countryURLs = new List<string>();
+            List<Country> countries = await _context.Countries.Where(_ => _.ContinentId == continentId).ToListAsync();
+            foreach (Country country in countries)
+            {
+                countryURLs.Add($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}/{typeof(Country).Name}/{country.Id}");
+            }
+            return countryURLs;
         }
     }
 }
