@@ -21,45 +21,53 @@ namespace Project_GeoService.Controllers
             _context = context;
         }
 
+        #region Routes
         // GET: api/continent
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Continent>>> GetContinents()
+        public async Task<ActionResult<IEnumerable<ContinentDTOString>>> GetContinents()
         {
             var continents = await _context.Continents.ToListAsync();
-            foreach (Continent c in continents)
+            List<ContinentDTOString> dtos = new List<ContinentDTOString>();
+            if (continents.Any())
             {
-                var countries = await _context.Countries.Where(_ => _.ContinentId == c.Id).ToListAsync();
-                foreach (Country country in countries)
+                foreach (Continent c in continents)
                 {
-                    c.Countries.Add(country);
-                    c.Population += country.Population;
+                    dtos.Add(ContinentToDTOString(c));
                 }
             }
-            return continents;
+
+            return dtos;
         }
 
         // GET: api/continent/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ContinentDTO>> GetContinent(long id)
+        [HttpGet("{id:long}")]
+        public async Task<ActionResult<ContinentDTOString>> GetContinent(long id)
         {
             var continent = await _context.Continents.FindAsync(id);
             if (continent == null) return NotFound();
 
-            //continent.Population = GetPopulation(id);
-            var foo = ContinentToDTO(continent);
-            return foo;
+            ContinentDTOString dto = ContinentToDTOString(continent);
+            return dto;
         }
 
         // PUT: api/continent/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutContinent(long id, Continent continent)
+        [HttpPut("{id:long}")]
+        public async Task<IActionResult> PutContinent(long id, [FromBody] ContinentDTOLong continentDTO)
         {
-            if (id != continent.Id)
-            {
-                return BadRequest();
-            }
+            if (id != continentDTO.Id) return BadRequest("Query parameter 'Id' has to be identical to the Id of the Continent in the body.");
 
+            Continent continent = await _context.Continents.FindAsync(id);
+            if (continent == null) return NotFound($"Continent with Id '{id}' doesn't exist.");
+
+            foreach (var countryId in continentDTO.Countries)
+            {
+                Country country = await _context.Countries.FindAsync(countryId);
+                if (country == null) return NotFound($"The specified Country with Id '{countryId}' doesn't exist.");
+
+                country.ContinentId = continent.Id;
+                _context.Entry(country).State = EntityState.Modified;
+            }
             _context.Entry(continent).State = EntityState.Modified;
 
             try
@@ -86,7 +94,7 @@ namespace Project_GeoService.Controllers
         [HttpPost]
         public async Task<ActionResult<Continent>> PostContinent([FromBody] Continent continent)
         {
-            if (ContinentExists(continent.Name)) return BadRequest();
+            if (ContinentExists(continent.Name)) return BadRequest($"Continent with Name '{continent.Name}' already exists.");
 
             _context.Continents.Add(continent);
             await _context.SaveChangesAsync();
@@ -95,23 +103,23 @@ namespace Project_GeoService.Controllers
         }
 
         // DELETE: api/continent/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:long}")]
         public async Task<IActionResult> DeleteContinent(long id)
         {
             var continent = await _context.Continents.FindAsync(id);
-            if (continent == null)
-            {
-                return NotFound();
-            }
+            if (continent == null) return NotFound();
+            if (_context.Countries.Any(_ => _.ContinentId == id)) return BadRequest("Cannot delete a Continent when there are still Countries with this Continent in the database.");
 
             _context.Continents.Remove(continent);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
+        #endregion
 
-        private ContinentDTO ContinentToDTO(Continent continent) =>
-            new ContinentDTO
+        #region HELPERS
+        private ContinentDTOString ContinentToDTOString(Continent continent) =>
+            new ContinentDTOString
             {
                 Id = continent.Id,
                 Name = continent.Name,
@@ -141,5 +149,7 @@ namespace Project_GeoService.Controllers
             }
             return countryURLs;
         }
+        #endregion
+
     }
 }

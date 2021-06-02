@@ -10,7 +10,7 @@ using Project_GeoService.Models;
 
 namespace Project_GeoService.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/continent/{continentId:long}/country")]
     [ApiController]
     public class CountryControllerEF : ControllerBase
     {
@@ -21,28 +21,25 @@ namespace Project_GeoService.Controllers
             _context = context;
         }
 
-        // GET: api/CountryControllerEF
+        // GET: api/continent/1/country
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Country>>> GetCountries()
+        public async Task<ActionResult<IEnumerable<Country>>> GetCountries([FromRoute] long continentId)
         {
-            return await _context.Countries.ToListAsync();
+            return await _context.Countries.Where(_ => _.ContinentId == continentId).ToListAsync();
         }
 
-        // GET: api/CountryControllerEF/5
-        [HttpGet("{id}")]
+        // GET: api/continent/1/country/5
+        [HttpGet("{id:long}")]
         public async Task<ActionResult<Country>> GetCountry(long id)
         {
             var country = await _context.Countries.FindAsync(id);
 
-            if (country == null)
-            {
-                return NotFound();
-            }
+            if (country == null) return NotFound();
 
             return country;
         }
 
-        // PUT: api/CountryControllerEF/5
+        // PUT: api/continent/1/country/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCountry(long id, Country country)
@@ -73,7 +70,7 @@ namespace Project_GeoService.Controllers
             return NoContent();
         }
 
-        // POST: api/CountryControllerEF
+        // POST: api/continent/1/country
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Country>> PostCountry(Country country)
@@ -84,7 +81,7 @@ namespace Project_GeoService.Controllers
             return CreatedAtAction("GetCountry", new { id = country.Id }, country);
         }
 
-        // DELETE: api/CountryControllerEF/5
+        // DELETE: api/continent/1/country/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCountry(long id)
         {
