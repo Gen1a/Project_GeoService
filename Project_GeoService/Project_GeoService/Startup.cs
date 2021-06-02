@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Project_GeoService.Data;
+using Newtonsoft.Json;
 
 namespace Project_GeoService
 {
@@ -30,7 +31,10 @@ namespace Project_GeoService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(setup => setup.ReturnHttpNotAcceptable = true)
-                .AddNewtonsoftJson()
+                .AddNewtonsoftJson(options =>
+                {
+                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                })
                 .AddXmlDataContractSerializerFormatters();
             //services.AddSingleton<ICountryRepository, CountryRepository>();
             services.AddDbContext<Project_GeoServiceContext>(options =>
