@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Project_GeoService.Models
 {
-    public class ContinentDTO : BaseEntity
+    public class ContinentDTOString : BaseEntity
     {
         public string Name { get; set; }
         public int Population { get; set; }
