@@ -7,6 +7,6 @@ namespace Project_GeoService.Models
     {
         public string Name { get; set; }
         public int Population { get; set; }
-        public virtual IEnumerable<long> Countries { get; set; }
+        public IEnumerable<long> Countries { get; set; }
     }
 }

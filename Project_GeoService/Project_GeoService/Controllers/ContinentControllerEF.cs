@@ -40,7 +40,7 @@ namespace Project_GeoService.Controllers
         }
 
         // GET: api/continent/5
-        [HttpGet("{id:long}")]
+        [HttpGet("{id:long}", Name = "GetContinent")]
         public async Task<ActionResult<ContinentDTOString>> GetContinent(long id)
         {
             var continent = await _context.Continents.FindAsync(id);
@@ -92,14 +92,30 @@ namespace Project_GeoService.Controllers
         // POST: api/continent
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Continent>> PostContinent([FromBody] Continent continent)
+        public async Task<ActionResult<Continent>> PostContinent([FromBody] ContinentDTOLong continentDTO)
         {
-            if (ContinentExists(continent.Name)) return BadRequest($"Continent with Name '{continent.Name}' already exists.");
+            if (ContinentExists(continentDTO.Name)) return BadRequest($"Continent with Name '{continentDTO.Name}' already exists.");
 
-            _context.Continents.Add(continent);
+            Continent toPost = new Continent { Name = continentDTO.Name };
+            if (continentDTO.Countries != null && continentDTO.Countries.Any())
+            {
+                toPost.Countries = new List<Country>();
+
+                foreach (var countryId in continentDTO.Countries)
+                {
+                    Country country = await _context.Countries.FindAsync(countryId);
+                    if (country == null) return NotFound($"The specified Country with Id '{countryId}' doesn't exist.");
+
+                    toPost.Countries.Add(country);
+                    toPost.Population += country.Population;
+                    _context.Entry(country).State = EntityState.Modified;
+                }
+            }
+
+            _context.Continents.Add(toPost);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetContinent", new { id = continent.Id }, continent);
+            return CreatedAtAction(nameof(GetContinent), new { id = toPost.Id }, ContinentToDTOString(toPost));
         }
 
         // DELETE: api/continent/5
@@ -145,11 +161,10 @@ namespace Project_GeoService.Controllers
             List<Country> countries = await _context.Countries.Where(_ => _.ContinentId == continentId).ToListAsync();
             foreach (Country country in countries)
             {
-                countryURLs.Add($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}/{typeof(Country).Name}/{country.Id}");
+                countryURLs.Add($"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}{HttpContext.Request.Path}/{continentId}/{typeof(Country).Name}/{country.Id}");
             }
             return countryURLs;
         }
         #endregion
-
     }
 }
