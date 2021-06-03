@@ -21,7 +21,6 @@ namespace Project_GeoService.Models
 
         public virtual ICollection<CountryRiver> CountryRivers { get; set; }
 
-        [Required]
         public Continent Continent { get; set; }
 
         [Range(0, long.MaxValue, ErrorMessage = "{0} must be greater than {1}.")]
